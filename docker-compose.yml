@@ -1,0 +1,34 @@
+version: "3"
+services:
+    web:
+        build: ./client/
+        working_dir: /app
+        container_name: "ml-frontend"
+        ports:
+            - "3000:3000"
+        links:
+            - api
+        volumes:
+            - "./client:/app"
+            - "/app/node_modules"
+        command: ["npm", "start"]
+    mongo:
+        image: mongo
+        container_name: "ml-db"
+        ports:
+            - "27017:27017"
+        volumes:
+            - "./data:/data/db"
+    api:
+        build: ./api/
+        working_dir: /api
+        container_name: "ml-api"
+        ports:
+            - "9000:9000"
+        volumes:
+            - "./api:/api"
+            - "/api/node_modules"
+        links:
+            - mongo
+        command: ["npm", "start"]
+    # test container
